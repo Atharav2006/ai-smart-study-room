@@ -24,7 +24,11 @@ class Settings(BaseSettings):
 
 
     # CORS
-    ALLOWED_ORIGINS: list[str] = ["*"]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://voluble-duckanoo-3d70b3.netlify.app"
+    ]
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.config import settings
 
 # API routers
 from app.api.v1.chat import router as chat_router
@@ -17,7 +18,7 @@ app = FastAPI(
 # CORS (for frontend connection)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # restrict later
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
