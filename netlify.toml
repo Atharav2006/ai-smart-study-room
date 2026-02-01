@@ -1,7 +1,7 @@
 # Netlify configuration for AI Smart Study Room Frontend
 
 [build]
-  # Use npm ci for faster, cleaner builds
+  base = "frontend"
   command = "npm ci && npm run build"
   publish = "dist"
 
