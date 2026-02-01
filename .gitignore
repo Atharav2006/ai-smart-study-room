@@ -1,0 +1,34 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+backend/.env
+backend/venv/
+backend/env/
+backend/output.txt
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Netlify
+.netlify/

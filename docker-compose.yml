@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - GEMINI_API_KEY=AIzaSyDx82kx9X7BJEx7StcFCJLFh0ARf_cjn3I
+      - SUPABASE_URL=https://ojuqpfbnwjbkftjoqrpt.supabase.co
+      - SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qdXFwZmJud2pia2Z0am9xcnB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjAzMDUsImV4cCI6MjA4NTQ5NjMwNX0.n1pIgUKeeN82JPVsIGBPEvbz8Ype370Y94gm9IVFY0U
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8000/api/v1
+      - VITE_SUPABASE_URL=https://ojuqpfbnwjbkftjoqrpt.supabase.co
+      - VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qdXFwZmJud2pia2Z0am9xcnB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5MjAzMDUsImV4cCI6MjA4NTQ5NjMwNX0.n1pIgUKeeN82JPVsIGBPEvbz8Ype370Y94gm9IVFY0U
+    command: npm run dev -- --host

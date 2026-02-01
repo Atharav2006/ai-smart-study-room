@@ -1,0 +1,29 @@
+# Render.com configuration for AI Smart Study Room Backend
+
+services:
+  - type: web
+    name: ai-smart-study-backend
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      - key: GEMINI_API_KEY
+        sync: false  # Set in Render dashboard
+      - key: LLM_MODEL
+        value: "gemini-1.5-flash"
+      - key: LLM_TEMPERATURE
+        value: "0.3"
+      - key: SUPABASE_URL
+        sync: false  # Set in Render dashboard
+      - key: SUPABASE_KEY
+        sync: false  # Set in Render dashboard
+      - key: DEBUG
+        value: "False"
+      - key: APP_NAME
+        value: "AI Smart Study Collaboration Room"
+    healthCheckPath: /
+    autoDeploy: true
