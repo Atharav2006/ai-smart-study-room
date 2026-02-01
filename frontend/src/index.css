@@ -3,22 +3,82 @@
 @tailwind utilities;
 
 :root {
-  --primary-color: #6366f1;
-  --secondary-color: #8b5cf6;
-  --bg-dark: #0f172a;
-  --card-dark: #1e293b;
-  --text-light: #f8fafc;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --secondary: #a855f7;
+  --accent: #ec4899;
+  --bg-main: #020617;
+  --bg-card: #0f172a;
+  --bg-glass: rgba(30, 41, 59, 0.7);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --glow-primary: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
-body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text-light);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  body {
+    @apply bg-[#020617] text-slate-100 antialiased selection:bg-indigo-500/30 overflow-x-hidden;
+  }
 }
 
-* {
-  box-sizing: border-box;
+@layer components {
+  .glass-card {
+    @apply bg-slate-900/50 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+  
+  .glass-button {
+    @apply relative overflow-hidden px-6 py-3 rounded-xl font-semibold transition-all duration-300
+           bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20
+           active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .premium-input {
+    @apply w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 
+           text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 
+           focus:ring-indigo-500/50 focus:border-indigo-500 transition-all;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Custom Gradients */
+.bg-gradient-premium {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-950;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+  h1 { @apply text-2xl !important; }
+  .glass-card { @apply rounded-2xl; }
 }

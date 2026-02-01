@@ -1,46 +1,54 @@
-# AI Smart Study Collaboration Room
+# ✨ AI Smart Study Room
+> **The Future of Collaborative Learning, Augmented by Intelligence.**
 
-A privacy-first, AI-powered collaborative learning platform designed for students and life-long learners.
+A premium, privacy-first, AI-powered collaborative learning platform designed for students and life-long learners who demand excellence.
 
-## Features
+---
 
-- **Privacy-First Design**: Ephemeral chat history, localized AI processing when possible.
-- **AI Study Companion**: Real-time AI analysis of study discussions.
-- **Collaboration Rooms**: Shared spaces for group study sessions.
-- **Smart Summaries**: AI-generated structured summaries of learning sessions.
-- **Learning Analysis**: Tracks skill signals and identifies knowledge gaps.
-- **Interactive Quizzes**: Auto-generated quizzes based on your study sessions.
+## 💎 Premium Features
 
-## Tech Stack
+- **🚀 Intelligent Collaboration**: Real-time shared spaces for group study with integrated AI oversight.
+- **🧠 Neural Insights**: AI-driven analysis that identifies skill signals, knowledge gaps, and learning patterns.
+- **📜 Session Masterpieces**: Auto-generated, high-fidelity summaries and key takeaways from every study session.
+- **👤 Personalized Identity**: Customizable user profiles with avatar systems and session history.
+- **📱 Fluid Responsiveness**: A state-of-the-art "God-Mode" UI that adapts perfectly from desktop monitors to mobile devices.
+- **🔒 Privacy-Focused**: End-to-end data integrity with ephemeral session handling and secure authentication.
 
-- **Backend**: FastAPI (Python), OpenAI GPT-4o-mini
-- **Frontend**: React (Vite), Framer Motion, Axios, Tailwind CSS
-- **AI/ML**: LangChain (planned), Sentence-Transformers, OpenAI
+## 🛠️ Tech Stack & Architecture
 
-## Getting Started
+- **Core Engine**: FastAPI (Python) - High performance, asynchronous backend.
+- **Intelligence**: OpenAI GPT-4o Integration & LLM-powered analytics.
+- **Interface**: React 18, Vite, Framer Motion (Modern Animations), Tailwind CSS.
+- **Real-time & DB**: Supabase (PostgreSQL + Realtime Engine).
+- **Icons**: Lucide React.
+- **Design System**: Glassmorphism & Modern Dark UI.
+
+## 🚀 Deployment & Setup
 
 ### Prerequisites
-- Docker & Docker Compose
-- Node.js (v18+)
-- Python (3.11+)
-- OpenAI API Key
+- **Docker** & Docker Compose
+- **Node.js** (v18+)
+- **Python** (3.11+)
+- **OpenAI API Key**
+- **Supabase Account**
 
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd ai-smart-study-room
-   ```
-
-2. Set up environment variables:
-   - Copy `backend/.env.example` to `backend/.env` and add your `OPENAI_API_KEY`.
-
-3. Run with Docker Compose:
+### Immediate Launch (Docker)
+1. Configure `.env` in `backend/` and `frontend/`.
+2. Execute:
    ```bash
    docker-compose up --build
    ```
 
-4. Alternatively, run locally:
-   - **Backend**: `cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload`
-   - **Frontend**: `cd frontend && npm install && npm run dev`
+### Local Development
+- **Backend Infrastructure**: 
+  ```bash
+  cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload
+  ```
+- **Frontend Experience**:
+  ```bash
+  cd frontend && npm install && npm run dev
+  ```
+
+---
+Built with ❤️ for the next generation of learners.
+

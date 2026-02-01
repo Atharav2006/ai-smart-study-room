@@ -22,7 +22,6 @@ const Home = () => {
 
         setIsJoining(true);
         try {
-            // Check if room exists
             const { data, error } = await supabase
                 .from('rooms')
                 .select('room_id')
@@ -53,7 +52,6 @@ const Home = () => {
         setError('');
 
         try {
-            // Generate a cleaner, more readable ID (6 chars)
             const newRoomId = Math.random().toString(36).substring(2, 8).toUpperCase();
 
             const { error } = await supabase
@@ -80,76 +78,104 @@ const Home = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-4">
+        <div className="flex flex-col items-center justify-center min-h-[85vh] text-center px-4 md:px-6">
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-2xl w-full"
+                transition={{ duration: 0.6 }}
+                className="max-w-3xl w-full"
             >
-                <BrainCircuit className="w-16 h-16 text-indigo-500 mx-auto mb-6" />
-                <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
-                    Level Up Your Study Sessions
-                </h1>
-                <p className="text-slate-400 text-lg md:text-xl mb-12">
-                    A privacy-first collaborative space where AI helps you learn faster,
-                    identifies gaps, and summaries your growth.
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 text-left">
-                    <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-slate-600 transition-colors">
-                        <BookOpen className="w-8 h-8 text-purple-400 mb-4" />
-                        <h3 className="font-bold mb-2 text-lg">Smart Summaries</h3>
-                        <p className="text-sm text-slate-400">Auto-generated notes from your study discussions effectively.</p>
-                    </div>
-                    <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-slate-600 transition-colors">
-                        <Users className="w-8 h-8 text-blue-400 mb-4" />
-                        <h3 className="font-bold mb-2 text-lg">Real-time Collab</h3>
-                        <p className="text-sm text-slate-400">Seamless chat with privacy-first data handling.</p>
-                    </div>
+                <div className="relative inline-block mb-8">
+                    <div className="absolute inset-0 bg-indigo-500 blur-3xl opacity-20 -z-10 animate-pulse"></div>
+                    <BrainCircuit className="w-20 h-20 text-indigo-500 mx-auto" />
                 </div>
 
-                <div className="max-w-md mx-auto space-y-4">
-                    <form onSubmit={handleJoin} className="flex gap-2 relative">
+                <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight leading-tight">
+                    Level Up Your <span className="text-gradient">Study Sessions</span>
+                </h1>
+
+                <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+                    A privacy-first collaborative space where AI helps you learn faster,
+                    identifies gaps, and summarizes your growth.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 text-left">
+                    <motion.div
+                        whileHover={{ y: -5 }}
+                        className="glass-card p-8 rounded-3xl"
+                    >
+                        <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6">
+                            <BookOpen className="w-6 h-6 text-purple-400" />
+                        </div>
+                        <h3 className="font-bold mb-2 text-xl text-slate-100">Smart Summaries</h3>
+                        <p className="text-slate-400 leading-relaxed">Auto-generated notes from your study discussions effectively using advanced AI.</p>
+                    </motion.div>
+
+                    <motion.div
+                        whileHover={{ y: -5 }}
+                        className="glass-card p-8 rounded-3xl"
+                    >
+                        <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6">
+                            <Users className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <h3 className="font-bold mb-2 text-xl text-slate-100">Real-time Collab</h3>
+                        <p className="text-slate-400 leading-relaxed">Seamlessly collaborate with your peers in real-time with full data privacy.</p>
+                    </motion.div>
+                </div>
+
+                <div className="max-w-md mx-auto space-y-6">
+                    <div className="glass-card p-2 rounded-2xl flex flex-col sm:flex-row gap-2">
                         <input
                             type="text"
                             placeholder="Enter Room Code"
-                            className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+                            className="flex-1 bg-transparent border-none rounded-xl px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-0 disabled:opacity-50 text-center sm:text-left"
                             value={roomId}
                             onChange={(e) => setRoomId(e.target.value.toUpperCase())}
                             disabled={isJoining}
                         />
                         <button
-                            type="submit"
+                            onClick={handleJoin}
                             disabled={isJoining || !roomId.trim()}
-                            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="glass-button w-full sm:w-auto flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                             {isJoining ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
-                                "Join"
+                                <>Join Room</>
                             )}
                         </button>
-                    </form>
+                    </div>
 
                     {error && (
                         <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-red-400 text-sm"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="text-red-400 text-sm font-medium"
                         >
                             {error}
                         </motion.p>
                     )}
 
-                    <div className="pt-2">
-                        <span className="text-slate-500 text-sm">Or </span>
+                    <div className="pt-2 flex flex-col items-center gap-4">
+                        <div className="flex items-center gap-4 w-full max-w-xs">
+                            <div className="h-px bg-slate-800 flex-1"></div>
+                            <span className="text-slate-500 text-xs font-medium uppercase tracking-wider">Or</span>
+                            <div className="h-px bg-slate-800 flex-1"></div>
+                        </div>
+
                         <button
                             onClick={createRoom}
                             disabled={isCreating}
-                            className="text-indigo-400 hover:text-indigo-300 font-medium underline disabled:opacity-50 inline-flex items-center gap-2"
+                            className="group flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-bold transition-all"
                         >
-                            {isCreating && <Loader2 className="w-4 h-4 animate-spin" />}
-                            create a new study room
+                            {isCreating ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                                <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center group-hover:bg-indigo-500/20 transition-all">
+                                    <BrainCircuit className="w-5 h-5" />
+                                </div>
+                            )}
+                            Initialize New Study Room
                         </button>
                     </div>
                 </div>

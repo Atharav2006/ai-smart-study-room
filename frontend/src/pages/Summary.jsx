@@ -32,93 +32,111 @@ const Summary = () => {
         fetchSessionSummary();
     }, [roomId]);
 
-    if (loading) return <div className="p-10 text-center">Loading Session Masterpiece...</div>;
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <Loader2 className="w-12 h-12 text-indigo-500 animate-spin" />
+            <p className="text-slate-400 font-medium animate-pulse">Generating your session masterpiece...</p>
+        </div>
+    );
 
     return (
-        <div className="max-w-4xl mx-auto py-8">
-            <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors">
-                <ArrowLeft size={16} /> Back to Home
+        <div className="max-w-5xl mx-auto py-8 px-4 md:px-0 animate-fade-in">
+            <Link to="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-indigo-400 mb-8 transition-colors font-medium group text-sm">
+                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Dashboard
             </Link>
 
-            <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-slate-700 rounded-3xl p-8 mb-8">
-                <div className="flex items-center gap-4 mb-6">
-                    <div className="p-3 bg-yellow-500/20 rounded-2xl">
-                        <Trophy className="text-yellow-500 w-8 h-8" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold">Session Accomplished!</h1>
-                        <p className="text-slate-400 font-mono">Room: {roomId}</p>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50 text-center">
-                        <p className="text-slate-400 text-sm mb-1">Messages</p>
-                        <p className="text-2xl font-bold">{data.stats?.message_count || 0}</p>
-                    </div>
-                    <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50 text-center">
-                        <p className="text-slate-400 text-sm mb-1">AI Insights</p>
-                        <p className="text-2xl font-bold text-indigo-400">{data.stats?.insight_count || 0}</p>
-                    </div>
-                    <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50 text-center">
-                        <p className="text-slate-400 text-sm mb-1">Duration</p>
-                        <p className="text-2xl font-bold">{data.stats?.duration_mins || '< 1'}m</p>
-                    </div>
-                </div>
-
-                <div className="space-y-6">
-                    <div className="p-6 bg-white/5 rounded-2xl">
-                        <h3 className="flex items-center gap-2 font-bold mb-4">
-                            <BookOpen size={18} className="text-indigo-400" /> Executive Summary
-                        </h3>
-                        <p className="text-slate-300 leading-relaxed italic">
-                            "{data.summary?.summary_text || 'No summary generated for this session.'}"
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="p-6 bg-white/5 rounded-2xl">
-                            <h3 className="flex items-center gap-2 font-bold mb-4">
-                                <Brain size={18} className="text-purple-400" /> Mastery Profile
-                            </h3>
-                            <div className="space-y-4">
-                                {data.skills.map((skill, i) => (
-                                    <div key={i}>
-                                        <div className="flex justify-between text-xs mb-1">
-                                            <span>{skill.name}</span>
-                                            <span>Level {skill.level}/5</span>
-                                        </div>
-                                        <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full bg-indigo-500 transition-all duration-1000"
-                                                style={{ width: `${(skill.level / 5) * 100}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                ))}
+            <div className="glass-card rounded-[2.5rem] overflow-hidden mb-12">
+                <div className="bg-gradient-to-br from-indigo-600/20 via-purple-600/20 to-transparent p-8 md:p-12">
+                    <div className="flex flex-col md:flex-row md:items-center gap-8 mb-12">
+                        <div className="w-20 h-20 bg-yellow-500/10 rounded-3xl flex items-center justify-center shadow-lg shadow-yellow-500/10 border border-yellow-500/20 rotate-3">
+                            <Trophy className="text-yellow-500 w-10 h-10 -rotate-3" />
+                        </div>
+                        <div>
+                            <h1 className="text-4xl md:text-5xl font-black mb-2 tracking-tight">Session <span className="text-gradient">Accomplished!</span></h1>
+                            <div className="flex items-center gap-2 text-slate-500 font-mono text-sm">
+                                <span className="bg-slate-800 px-2 py-1 rounded">ROOM ID: {roomId}</span>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="p-6 bg-white/5 rounded-2xl">
-                            <h3 className="flex items-center gap-2 font-bold mb-4">
-                                <HelpCircle size={18} className="text-orange-400" /> Learning Gaps
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-12">
+                        <div className="glass-card bg-white/5 p-6 rounded-3xl text-center border-white/5 hover:border-indigo-500/20 transition-all">
+                            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Messages</p>
+                            <p className="text-3xl font-black text-slate-100">{data.stats?.message_count || 0}</p>
+                        </div>
+                        <div className="glass-card bg-white/5 p-6 rounded-3xl text-center border-white/5 hover:border-purple-500/20 transition-all">
+                            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">AI Insights</p>
+                            <p className="text-3xl font-black text-indigo-400">{data.stats?.insight_count || 0}</p>
+                        </div>
+                        <div className="glass-card bg-white/5 p-6 rounded-3xl text-center border-white/5 hover:border-blue-500/20 transition-all">
+                            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Duration</p>
+                            <p className="text-3xl font-black text-slate-100">{data.stats?.duration_mins || '< 1'}m</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-8">
+                        <div className="glass-card bg-slate-900/40 p-8 rounded-3xl border-white/5">
+                            <h3 className="flex items-center gap-3 font-bold text-xl mb-6">
+                                <BookOpen size={24} className="text-indigo-400" />
+                                <span className="text-gradient">Executive Summary</span>
                             </h3>
-                            <ul className="space-y-2">
-                                {(data.summary?.suggested_topics || ['No gaps detected']).map((topic, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-                                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
-                                        {topic}
-                                    </li>
-                                ))}
-                            </ul>
+                            <p className="text-slate-300 text-lg leading-relaxed italic">
+                                "{data.summary?.summary_text || 'No summary generated for this session.'}"
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="glass-card bg-slate-900/40 p-8 rounded-3xl border-white/5">
+                                <h3 className="flex items-center gap-3 font-bold text-xl mb-6">
+                                    <Brain size={24} className="text-purple-400" /> Mastery Profile
+                                </h3>
+                                <div className="space-y-6">
+                                    {data.skills.length > 0 ? data.skills.map((skill, i) => (
+                                        <div key={i} className="space-y-2">
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="font-bold text-slate-300">{skill.name}</span>
+                                                <span className="text-indigo-400 font-mono">Lvl {skill.level}/5</span>
+                                            </div>
+                                            <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-white/5">
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${(skill.level / 5) * 100}%` }}
+                                                    transition={{ duration: 1, delay: i * 0.1 }}
+                                                    className="h-full bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full"
+                                                ></motion.div>
+                                            </div>
+                                        </div>
+                                    )) : <p className="text-slate-500 italic text-sm">No specific skills detected yet.</p>}
+                                </div>
+                            </div>
+
+                            <div className="glass-card bg-slate-900/40 p-8 rounded-3xl border-white/5">
+                                <h3 className="flex items-center gap-3 font-bold text-xl mb-6">
+                                    <HelpCircle size={24} className="text-orange-400" /> Learning Gaps
+                                </h3>
+                                <div className="space-y-4">
+                                    {(data.summary?.suggested_topics || ['No gaps detected']).map((topic, i) => (
+                                        <motion.div
+                                            key={i}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: i * 0.1 }}
+                                            className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10"
+                                        >
+                                            <div className="w-2 h-2 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50"></div>
+                                            <span className="text-slate-300 font-medium">{topic}</span>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="text-center">
-                <Link to={`/room/${roomId}`} className="text-indigo-400 hover:text-indigo-300 font-medium">
-                    Need to study more? Return to Room
+            <div className="text-center pb-12">
+                <Link to={`/room/${roomId}`} className="glass-card px-8 py-4 rounded-2xl text-indigo-400 hover:text-white hover:bg-indigo-600/10 transition-all font-bold group inline-flex items-center gap-2">
+                    Need more focus? Return to study room
                 </Link>
             </div>
         </div>

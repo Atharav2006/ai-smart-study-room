@@ -79,8 +79,28 @@ export const AuthProvider = ({ children }) => {
 
     const signOut = () => supabase.auth.signOut();
 
+    const updateProfile = async (updates) => {
+        try {
+            const { data, error } = await supabase
+                .from('users')
+                .update(updates)
+                .eq('id', user.id)
+                .select()
+                .single();
+
+            if (error) throw error;
+            if (data) {
+                setProfile(data);
+                return { data, error: null };
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            return { data: null, error };
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, profile, loading, signUp, signIn, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, profile, loading, signUp, signIn, signInWithGoogle, signOut, updateProfile }}>
             {!loading && children}
         </AuthContext.Provider>
     );
