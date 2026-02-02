@@ -7,6 +7,7 @@ from app.api.v1.chat import router as chat_router
 from app.api.v1.summary import router as summary_router
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.quiz import router as quiz_router
+from app.api.v1.history import router as history_router
 
 # App initialization
 app = FastAPI(
@@ -37,3 +38,4 @@ app.include_router(chat_router, prefix="/api/v1/chat", tags=["Chat"])
 app.include_router(summary_router, prefix="/api/v1/summary", tags=["Summary"])
 app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["Analytics"])
 app.include_router(quiz_router, prefix="/api/v1/quiz", tags=["Quiz"])
+app.include_router(history_router, prefix="/api/v1/history", tags=["History"])

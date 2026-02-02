@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { Trophy, ArrowLeft, Brain, BookOpen, CheckCircle, HelpCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -8,6 +8,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 
 const Summary = () => {
     const { roomId } = useParams();
+    const location = useLocation();
     const [data, setData] = useState({ stats: {}, skills: [], summary: {} });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -15,6 +16,18 @@ const Summary = () => {
 
     useEffect(() => {
         const fetchSessionSummary = async () => {
+            // If we came from "End Session", we might have data in state
+            if (location.state?.analysis) {
+                const analysis = location.state.analysis;
+                setData({
+                    stats: analysis.stats || {},
+                    skills: analysis.skills || [],
+                    summary: analysis, // The whole object or parts of it
+                });
+                setLoading(false);
+                return;
+            }
+
             try {
                 const stats = await axios.get(`${API_URL}/analytics/stats/${roomId}`);
                 const skills = await axios.get(`${API_URL}/analytics/signals/${roomId}`);
@@ -33,7 +46,7 @@ const Summary = () => {
             }
         };
         fetchSessionSummary();
-    }, [roomId]);
+    }, [roomId, location.state]);
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -97,7 +110,7 @@ const Summary = () => {
                                 <span className="text-gradient">Executive Summary</span>
                             </h3>
                             <p className="text-slate-300 text-lg leading-relaxed italic">
-                                "{data.summary?.summary_text || 'No summary generated for this session.'}"
+                                "{data.summary?.summary_text || data.summary?.summary?.summary_text || 'No summary generated for this session.'}"
                             </p>
                         </div>
 
@@ -131,7 +144,7 @@ const Summary = () => {
                                     <HelpCircle size={24} className="text-orange-400" /> Learning Gaps
                                 </h3>
                                 <div className="space-y-4">
-                                    {(data.summary?.suggested_topics || ['No gaps detected']).map((topic, i) => (
+                                    {(data.summary?.suggested_topics || data.summary?.summary?.suggested_topics || ['No gaps detected']).map((topic, i) => (
                                         <motion.div
                                             key={i}
                                             initial={{ opacity: 0, x: 20 }}

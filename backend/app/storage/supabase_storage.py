@@ -150,3 +150,45 @@ class SupabaseStorage:
         return None
 
 
+    def save_history_entry(self, room_id: str, session_data: Dict[str, Any]) -> bool:
+        """
+        Save a completed session to the history table.
+        """
+        if self.client:
+            try:
+                # Check if we should use a new UUID for this specific historical session record
+                history_id = str(uuid.uuid4())
+                
+                payload = {
+                    "id": history_id,
+                    "room_id": room_id,
+                    "summary_data": session_data,
+                    "created_at": datetime.utcnow().isoformat(),
+                    "topic": session_data.get("summary", {}).get("topics_covered", ["General Study"])[0] if isinstance(session_data.get("summary", {}).get("topics_covered"), list) and session_data.get("summary", {}).get("topics_covered") else "General Study"
+                }
+                
+                self.client.table("session_history").insert(payload).execute()
+                return True
+            except Exception as e:
+                print(f"Error saving history entry: {e}")
+                return False
+        return False
+
+    def get_history(self, room_id: str) -> List[Dict[str, Any]]:
+        """
+        Retrieve list of past sessions for a room.
+        """
+        if self.client:
+            try:
+                res = self.client.table("session_history")\
+                    .select("id, room_id, created_at, topic, summary_data")\
+                    .eq("room_id", room_id)\
+                    .order("created_at", desc=True)\
+                    .execute()
+                return res.data
+            except Exception as e:
+                print(f"Error fetching history: {e}")
+                return []
+        return []
+
+

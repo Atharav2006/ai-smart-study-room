@@ -4,7 +4,10 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../utils/supabaseClient';
 
+import { useNavigate } from 'react-router-dom';
+
 const ChatRoom = ({ roomId }) => {
+    const navigate = useNavigate();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -75,13 +78,45 @@ const ChatRoom = ({ roomId }) => {
         }
     };
 
-    const clearChat = async () => {
-        if (window.confirm("Are you sure you want to clear this session's history?")) {
+    const endSession = async () => {
+        if (window.confirm("Are you sure you want to end this session? This will generate a summary and archive the chat.")) {
+            setLoading(true);
             try {
-                await axios.delete(`${API_URL}/chat/clear/${roomId}`);
-                setMessages([]);
+                // Call end session endpoint
+                const res = await axios.post(`${API_URL}/history/end`, { room_id: roomId });
+
+                // Navigate to summary page to see the results
+                // We pass the analysis data via state or just let the Summary page fetch the latest
+                // Since "End" clears the room, we should verify Summary page can still fetch the stats/skills
+                // BUT: The Summary page fetches from /analytics/stats/{roomId} etc.
+                // If we cleared the room messages, those endpoints might return empty UNLESS we fetch from history.
+                // CURRENT ACTION: The User wants to see the summary effectively.
+                // Ideally, we redirect to a specific summary view or just generic summary page.
+                // Let's rely on the Summary page fetching fresh data from the *archived* session if we support that,
+                // OR we pass the data we just got from 'end' via navigation state?
+
+                // Simpler approach for now:
+                // 1. The backend 'end' logic archives it.
+                // 2. We redirect to /summary/:roomId. 
+                // 3. The /summary/:roomId page currently fetches from 'stats'/'signals' which look at 'messages' table.
+                // PROBLEM: If we clear 'messages', Summary page fails.
+                // FIX: Summary page should fetch from History if Active is empty? Or we delay clearing?
+
+                // TEMPORARY FIX: We won't clear immediately in the backend if we rely on Summary page reading active messages.
+                // BUT the requirements say "creates new session automatically".
+                // So we MUST clear.
+
+                // BETTER FIX: Pass the 'analysis' result directly to the Summary page via react-router state.
+                // Update Summary.jsx to use location.state if available.
+
+                // Let's navigate with state
+                navigate(`/summary/${roomId}`, { state: { analysis: res.data.analysis } });
+
             } catch (err) {
-                console.error("Failed to clear chat:", err);
+                console.error("Failed to end session:", err);
+                alert("Failed to end session properly. Please try again.");
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -145,9 +180,9 @@ const ChatRoom = ({ roomId }) => {
                 <form onSubmit={sendMessage} className="flex gap-3 max-w-5xl mx-auto">
                     <button
                         type="button"
-                        onClick={clearChat}
+                        onClick={endSession}
                         className="p-3 text-slate-500 hover:text-red-400 transition-all rounded-xl hover:bg-red-500/10 flex-shrink-0"
-                        title="Clear Session"
+                        title="End Session & Generate Summary"
                     >
                         <Trash2 size={20} />
                     </button>
