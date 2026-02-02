@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Trophy, ArrowLeft, Brain, BookOpen, CheckCircle, HelpCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 
