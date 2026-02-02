@@ -47,10 +47,10 @@ Required JSON structure:
   "action_items": [string],
   "revision_notes": [string],
   "skills_identified": [
-    {
+    {{
       "name": "Skill Name",
       "level": 1-5
-    }
+    }}
   ]
 }}
 

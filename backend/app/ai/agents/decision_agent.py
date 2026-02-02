@@ -29,7 +29,7 @@ class DecisionAgent(BaseAgent):
     def build_prompt(
         self,
         messages: List[Dict[str, Any]],
-        metadata: Dict[str, Any] | None,
+        metadata: Dict[str, Any] | None = None,
     ) -> str:
         chat_text = self.format_chat_for_prompt(messages)
 
