@@ -12,8 +12,8 @@ async def test_llm():
     print(f"Testing LLM Client with API Key: {settings.GEMINI_API_KEY[:5]}...")
     client = LLMClient()
     
-    if not client.client:
-        print("Client is None!")
+    if not client.model:
+        print("Model is None! (API Key likely missing)")
         return
 
     try:
@@ -28,9 +28,14 @@ async def test_llm():
         
         # The new SDK genai.Client has .models.list()
         
-        pager = client.client.models.list() 
-        for model in pager:
-            print(f"- {model.name}")
+        # The genai library doesn't expose a simple list models on the model object easily
+        # We can just skip listing or use genai.list_models() if we import it
+        import google.generativeai as genai
+        if client.api_key:
+            genai.configure(api_key=client.api_key)
+            for m in genai.list_models():
+                if 'generateContent' in m.supported_generation_methods:
+                    print(f"- {m.name}")
             
     except Exception as e:
         print(f"List models failed: {e}")

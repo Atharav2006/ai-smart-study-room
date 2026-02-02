@@ -9,6 +9,7 @@ Your task is to analyze a group study discussion and generate a structured summa
 - Key explanations provided during the discussion
 - Action items or next steps for the group
 - Revision notes for later study
+- Identified skills demonstrated by participants (Critical Thinking, Collaboration, etc.)
 
 Focus on educational value. Be concise but comprehensive.
 """
@@ -44,7 +45,13 @@ Required JSON structure:
   ],
   "important_explanations": [string],
   "action_items": [string],
-  "revision_notes": [string]
+  "revision_notes": [string],
+  "skills_identified": [
+    {
+      "name": "Skill Name",
+      "level": 1-5
+    }
+  ]
 }}
 
 Discussion:

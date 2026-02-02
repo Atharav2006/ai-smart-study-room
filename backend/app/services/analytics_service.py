@@ -106,11 +106,18 @@ class AnalyticsService:
 
             user_msgs = len([m for m in messages if m.get("role") == "user"])
             
+            # If we have live messages, we can't easily guess skills without LLM.
+            # So we return a placeholder that will be replaced by the SummaryAgent's analysis
+            # upon session end.
+            
+            # However, for real-time views, we can return valid defaults or specialized signals
+            # derived from message interactions if we added that logic.
+            # For now, return empty or basic signals that don't look fake.
+            
             return {
                 "signals": [
-                    {"name": "Critical Thinking", "level": min(5, (user_msgs // 5) + 1)},
-                    {"name": "Collaboration", "level": min(5, (user_msgs // 10) + 1)},
-                    {"name": "Research", "level": 2}
+                    # Dynamic signals will be populated by the AI Summary Agent
+                    {"name": "Participation", "level": min(5, (user_msgs // 5) + 1)},
                 ]
             }
         except Exception as e:

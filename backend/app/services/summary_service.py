@@ -47,10 +47,18 @@ class SummaryService:
         # CAPTURE ANALYTICS BEFORE CLEARING
         # This ensures the summary contains the stats/skills even after messages are deleted
         stats = self.analytics_service.get_session_stats(session_id)
-        skills = self.analytics_service.get_skill_signals(session_id)
+        
+        # Use AI-extracted skills if available, otherwise fallback to analytics defaults
+        ai_skills = analysis_result.get("skills_identified", [])
+        if ai_skills:
+            # Normalize skills if needed, or just pass them through
+            analysis_result["skills"] = ai_skills
+        else:
+            # Fallback
+            skills_data = self.analytics_service.get_skill_signals(session_id)
+            analysis_result["skills"] = skills_data.get("signals", [])
         
         analysis_result["stats"] = stats
-        analysis_result["skills"] = skills.get("signals", [])
         
         # Add convenience keys for frontend display
         if "topics_covered" in analysis_result:
