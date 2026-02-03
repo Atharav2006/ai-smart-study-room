@@ -150,7 +150,7 @@ class SupabaseStorage:
         return None
 
 
-    def save_history_entry(self, room_id: str, session_data: Dict[str, Any]) -> bool:
+    def save_history_entry(self, room_id: str, user_id: str, session_data: Dict[str, Any]) -> bool:
         """
         Save a completed session to the history table.
         """
@@ -162,6 +162,7 @@ class SupabaseStorage:
                 payload = {
                     "id": history_id,
                     "room_id": room_id,
+                    "user_id": user_id,
                     "summary_data": session_data,
                     "created_at": datetime.utcnow().isoformat(),
                     "topic": session_data.get("summary", {}).get("topics_covered", ["General Study"])[0] if isinstance(session_data.get("summary", {}).get("topics_covered"), list) and session_data.get("summary", {}).get("topics_covered") else "General Study"
@@ -188,6 +189,23 @@ class SupabaseStorage:
                 return res.data
             except Exception as e:
                 print(f"Error fetching history: {e}")
+                return []
+        return []
+
+    def get_user_history(self, user_id: str) -> List[Dict[str, Any]]:
+        """
+        Retrieve all sessions for a specific user across all rooms.
+        """
+        if self.client:
+            try:
+                res = self.client.table("session_history")\
+                    .select("id, room_id, created_at, topic, summary_data")\
+                    .eq("user_id", user_id)\
+                    .order("created_at", desc=True)\
+                    .execute()
+                return res.data
+            except Exception as e:
+                print(f"Error fetching user history: {e}")
                 return []
         return []
 

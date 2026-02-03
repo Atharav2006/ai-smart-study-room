@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from typing import Dict, Any, List
 from pydantic import BaseModel
 from app.dependencies import get_supabase_storage, get_summary_service
@@ -24,9 +24,27 @@ async def get_session_history(
     """
     return history_service.get_session_history(room_id)
 
+@router.get("/user")
+async def get_user_history(
+    request: Request,
+    history_service: HistoryService = Depends(get_history_service)
+):
+    """
+    Get all sessions for the authenticated user across all rooms.
+    """
+    # Extract user_id from Supabase auth header
+    # In production, this would come from JWT token validation
+    # For now, we'll expect it in headers or use a dependency
+    user_id = request.headers.get("X-User-ID")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User not authenticated")
+    
+    return history_service.get_user_sessions(user_id)
+
 @router.post("/end")
 async def end_session(
     req: EndSessionRequest,
+    request: Request,
     summary_service: SummaryService = Depends(get_summary_service),
     history_service: HistoryService = Depends(get_history_service)
 ):
@@ -47,11 +65,12 @@ async def end_session(
         pass
 
     # 2. Archive
-    # We always archive, even if it was short, to verify "Session Ended".
-    # Only skip if totally empty/error?
-    # Let's archive if we have valid analysis data, even if minimal.
+    # Extract user_id from request headers
+    user_id = request.headers.get("X-User-ID")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User not authenticated")
     
-    success = await history_service.archive_session(req.room_id, analysis)
+    success = await history_service.archive_session(req.room_id, user_id, analysis)
     
     if not success:
         # It might fail if table doesn't exist, but we still return the analysis so frontend can show summary.

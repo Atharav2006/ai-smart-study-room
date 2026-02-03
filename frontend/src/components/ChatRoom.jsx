@@ -82,8 +82,12 @@ const ChatRoom = ({ roomId }) => {
         if (window.confirm("Are you sure you want to end this session? This will generate a summary and archive the chat.")) {
             setLoading(true);
             try {
-                // Call end session endpoint
-                const res = await axios.post(`${API_URL}/history/end`, { room_id: roomId });
+                // Call end session endpoint with user_id in headers
+                const res = await axios.post(
+                    `${API_URL}/history/end`,
+                    { room_id: roomId },
+                    { headers: { 'X-User-ID': user?.id } }
+                );
 
                 // Navigate to summary page to see the results
                 // We pass the analysis data via state or just let the Summary page fetch the latest

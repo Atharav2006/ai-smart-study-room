@@ -12,12 +12,18 @@ class HistoryService:
         """
         return self.storage.get_history(room_id)
 
-    async def archive_session(self, room_id: str, session_data: Dict[str, Any]) -> bool:
+    def get_user_sessions(self, user_id: str) -> List[Dict[str, Any]]:
+        """
+        Get all sessions for a specific user across all rooms.
+        """
+        return self.storage.get_user_history(user_id)
+
+    async def archive_session(self, room_id: str, user_id: str, session_data: Dict[str, Any]) -> bool:
         """
         Archive the current session's summary and stats, then clear active messages.
         """
         # 1. Save the comprehensive summary to the history table
-        success = self.storage.save_history_entry(room_id, session_data)
+        success = self.storage.save_history_entry(room_id, user_id, session_data)
         
         if success:
             # 2. Clear the active messages for this room to start fresh

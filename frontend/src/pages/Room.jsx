@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { MessageSquare, Layout, Sparkles, AlertCircle, LogOut, Loader2, History } from 'lucide-react';
+import { MessageSquare, Layout, Sparkles, AlertCircle, LogOut, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import ChatRoom from '../components/ChatRoom';
 import SummaryPanel from '../components/SummaryPanel';
 import SkillSignals from '../components/SkillSignals';
-import SessionHistory from '../components/SessionHistory';
 
 const Room = () => {
     const { roomId } = useParams();
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('chat'); // 'chat', 'insights', or 'history'
+    const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'insights'
     const [isEnding, setIsEnding] = useState(false);
 
     const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
@@ -76,16 +75,6 @@ const Room = () => {
                         <Sparkles className="w-5 h-5" />
                         <span className="font-semibold">AI Insights</span>
                     </button>
-                    <button
-                        onClick={() => setActiveTab('history')}
-                        className={`flex items-center gap-3 px-5 py-4 rounded-2xl transition-all duration-300 ${activeTab === 'history'
-                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
-                            : 'text-slate-400 hover:bg-slate-800/50'
-                            }`}
-                    >
-                        <History className="w-5 h-5" />
-                        <span className="font-semibold">History</span>
-                    </button>
                 </nav>
 
                 <button
@@ -147,7 +136,7 @@ const Room = () => {
                         </div>
                         <ChatRoom roomId={roomId} />
                     </div>
-                ) : activeTab === 'insights' ? (
+                ) : (
                     <div className="flex-1 p-4 md:p-8 overflow-y-auto">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-8 animate-fade-in">
@@ -157,10 +146,6 @@ const Room = () => {
                                 <SkillSignals roomId={roomId} />
                             </div>
                         </div>
-                    </div>
-                ) : (
-                    <div className="flex-1 p-4 md:p-8 overflow-y-auto">
-                        <SessionHistory roomId={roomId} />
                     </div>
                 )}
             </div>
