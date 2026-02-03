@@ -27,6 +27,12 @@ def get_temp_memory():
     """
     return _temp_memory
 
+def get_supabase_storage():
+    """
+    Dependency: provide SupabaseStorage instance (same as temp_memory when using Supabase)
+    """
+    return _temp_memory
+
 def get_knowledge_store():
     """
     Dependency: provide KnowledgeStore instance
