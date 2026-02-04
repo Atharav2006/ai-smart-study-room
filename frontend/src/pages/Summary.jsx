@@ -19,6 +19,7 @@ const Summary = () => {
             // If we came from "End Session", we might have data in state
             if (location.state?.analysis) {
                 const analysis = location.state.analysis;
+                console.log("📊 Summary received from navigation state:", analysis);
                 setData({
                     stats: analysis.stats || {},
                     skills: analysis.skills || [],
@@ -32,6 +33,10 @@ const Summary = () => {
                 const stats = await axios.get(`${API_URL}/analytics/stats/${roomId}`);
                 const skills = await axios.get(`${API_URL}/analytics/signals/${roomId}`);
                 const summary = await axios.get(`${API_URL}/summary/${roomId}`);
+
+                console.log("📊 Summary from API:", summary.data);
+                console.log("📈 Stats from API:", stats.data);
+                console.log("🎯 Skills from API:", skills.data);
 
                 setData({
                     stats: stats.data,
@@ -110,7 +115,7 @@ const Summary = () => {
                                 <span className="text-gradient">Executive Summary</span>
                             </h3>
                             <p className="text-slate-300 text-lg leading-relaxed italic">
-                                "{data.summary?.summary_text || data.summary?.summary?.summary_text || 'No summary generated for this session.'}"
+                                "{data.summary?.summary_text || data.summary?.summary?.summary_text || data.summary?.summary || 'No summary generated for this session.'}"
                             </p>
                         </div>
 
@@ -144,18 +149,27 @@ const Summary = () => {
                                     <HelpCircle size={24} className="text-orange-400" /> Learning Gaps
                                 </h3>
                                 <div className="space-y-4">
-                                    {(data.summary?.suggested_topics || data.summary?.summary?.suggested_topics || ['No gaps detected']).map((topic, i) => (
-                                        <motion.div
-                                            key={i}
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: i * 0.1 }}
-                                            className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10"
-                                        >
-                                            <div className="w-2 h-2 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50"></div>
-                                            <span className="text-slate-300 font-medium">{topic}</span>
-                                        </motion.div>
-                                    ))}
+                                    {(() => {
+                                        const gaps = data.summary?.suggested_topics || data.summary?.summary?.suggested_topics || [];
+                                        const filteredGaps = Array.isArray(gaps) ? gaps.filter(g => g && !g.includes('No specific gaps')) : [];
+
+                                        if (filteredGaps.length === 0) {
+                                            return <p className="text-slate-500 italic text-sm">No gaps detected</p>;
+                                        }
+
+                                        return filteredGaps.map((topic, i) => (
+                                            <motion.div
+                                                key={i}
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: i * 0.1 }}
+                                                className="flex items-start gap-3 p-4 bg-slate-800/50 rounded-2xl border border-white/5 hover:border-orange-500/20 transition-all"
+                                            >
+                                                <div className="w-2 h-2 rounded-full bg-orange-400 mt-2 flex-shrink-0"></div>
+                                                <p className="text-slate-300 text-sm leading-relaxed">{topic}</p>
+                                            </motion.div>
+                                        ));
+                                    })()}
                                 </div>
                             </div>
                         </div>
